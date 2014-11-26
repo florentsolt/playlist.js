@@ -6,6 +6,7 @@ var ctx = {
     height: null,
     quarterHeight: null,
     scaling: null,
+    sampling: 5,
     min: 134  // 128 == zero.  min is the "minimum detected signal" level.
 };
 
@@ -19,17 +20,17 @@ module.exports.init = function(canvas) {
 };
 
 module.exports.draw = function (data) {
-    ctx.ctx2d.clearRect (0, 0, ctx.width, ctx.height);
-    ctx.ctx2d.lineWidth = 3;
+    ctx.ctx2d.lineWidth = 5;
     ctx.ctx2d.strokeStyle = "white";
 
     ctx.ctx2d.beginPath();
+    ctx.ctx2d.clearRect (0, 0, ctx.width, ctx.height);
 
     var zeroCross = findFirstPositiveZeroCrossing(data, ctx.width);
 
     ctx.ctx2d.moveTo(0, (256 - data[zeroCross]) * ctx.scaling);
-    for (var i = zeroCross, j = 0; (j < ctx.width) && (i < data.length); i++, j++) {
-        ctx.ctx2d.lineTo(j, (256 - data[i]) * ctx.scaling);
+    for (var i = zeroCross, j = 0; (j < ctx.width) && (i < data.length); i += ctx.sampling, j++) {
+        ctx.ctx2d.lineTo(j * ctx.sampling, (256 - data[i]) * ctx.scaling);
     }
     ctx.ctx2d.stroke();
 };

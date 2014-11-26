@@ -21,6 +21,7 @@ var ctx = {
     loop: true,
 
     oscillo: false,
+    interval: null,
 
     events: {
         play: noop,
@@ -70,6 +71,12 @@ module.exports.getSongs = function() {
 
 module.exports.setOscillo = function(bool) {
     ctx.oscillo = !!bool;
+    if (ctx.oscillo === true && ctx.interval === null) {
+        ctx.interval = window.setInterval(analyze, 30);
+    } else if (ctx.interval !== null) {
+        window.clearInterval(ctx.interval);
+        ctx.interval = null;
+    }
 };
 
 module.exports.setVolume = function (volume) {
@@ -154,9 +161,12 @@ module.exports.setLoop = function(bool) {
 /* --------- Private --------- */
 
 var analyze = function() {
-    ctx.analyser.getByteTimeDomainData(ctx.data);
-    oscillo.draw(ctx.data);
-    requestAnimationFrame(analyze);
+    if (module.exports.isPlaying()) {
+        ctx.analyser.getByteTimeDomainData(ctx.data);
+        oscillo.draw(ctx.data);
+        // requestAnimationFrame(analyze);
+    }
+    return true;
 };
 
 var setIndex = function(index) {
