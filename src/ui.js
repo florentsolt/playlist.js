@@ -1,6 +1,7 @@
 "use strict";
 
 var core = require("./core");
+var oscillo = require('./oscillo');
 
 var elements = {
     title: null,
@@ -39,6 +40,12 @@ module.exports.discover = function(id) {
 
     elements.next.click(core.next);
     elements.prev.click(core.prev);
+
+    elements.oscillo = window.$('<canvas>')
+        .attr('width', elements.artwork.width())
+        .attr('height', elements.artwork.height());
+    elements.artwork.append(elements.oscillo);
+    oscillo.init(elements.oscillo);
 };
 
 module.exports.update = function(song) {
