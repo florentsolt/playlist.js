@@ -26,6 +26,7 @@ module.exports.discover = function(id) {
     });
 
     elements.artwork.css({
+        "position": "relative",
         "background-size": "cover",
         "background-position": "50% 50%",
     });
@@ -42,9 +43,16 @@ module.exports.discover = function(id) {
     elements.prev.click(core.prev);
 
     elements.oscillo = window.$('<canvas>')
+        .css({
+            'position': 'absolute',
+            'top': '0px',
+            'left': '0px',
+            'width':  elements.artwork.width() + 'px',
+            'height': elements.artwork.height() + 'px'
+        })
         .attr('width', elements.artwork.width())
         .attr('height', elements.artwork.height());
-    elements.artwork.append(elements.oscillo);
+    elements.artwork.prepend(elements.oscillo);
     oscillo.init(elements.oscillo);
 };
 
