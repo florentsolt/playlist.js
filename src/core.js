@@ -72,11 +72,17 @@ module.exports.getSongs = function() {
 module.exports.setOscillo = function(bool) {
     ctx.oscillo = !!bool;
     if (ctx.oscillo === true && ctx.interval === null) {
-        ctx.interval = window.setInterval(analyze, 30);
+        ctx.interval = window.setInterval(analyze, 50);
+        oscillo.show();
     } else if (ctx.interval !== null) {
         window.clearInterval(ctx.interval);
         ctx.interval = null;
+        oscillo.hide();
     }
+};
+
+module.exports.getOscillo = function(bool) {
+    return ctx.oscillo;
 };
 
 module.exports.setVolume = function (volume) {

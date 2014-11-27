@@ -45,6 +45,7 @@ module.exports.discover = function(id) {
     elements.oscillo = window.$('<canvas>')
         .css({
             'position': 'absolute',
+            'display': 'none',
             'top': '0px',
             'left': '0px',
             'width':  elements.artwork.width() + 'px',

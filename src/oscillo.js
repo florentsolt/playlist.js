@@ -11,20 +11,28 @@ var ctx = {
 };
 
 module.exports.init = function(canvas) {
-    ctx.canvas = canvas.get(0);
-    ctx.ctx2d = ctx.canvas.getContext('2d');
+    ctx.canvas = canvas;
+    ctx.ctx2d = canvas.get(0).getContext('2d');
     ctx.width = canvas.attr('width');
     ctx.height = canvas.attr('height');
     ctx.quarterHeight = ctx.height / 4;
     ctx.scaling = ctx.height / 256;
 };
 
+module.exports.hide = function () {
+    ctx.canvas.css('display', 'none');
+};
+
+module.exports.show = function () {
+    ctx.canvas.css('display', 'block');
+};
+
 module.exports.draw = function (data) {
-    ctx.ctx2d.lineWidth = 5;
+    ctx.ctx2d.lineWidth = 3;
     ctx.ctx2d.strokeStyle = "white";
 
     ctx.ctx2d.beginPath();
-    ctx.ctx2d.clearRect (0, 0, ctx.width, ctx.height);
+    ctx.ctx2d.clearRect(0, 0, ctx.width, ctx.height);
 
     var zeroCross = findFirstPositiveZeroCrossing(data, ctx.width);
 
