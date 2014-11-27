@@ -6,7 +6,7 @@ var ctx = {
     height: null,
     quarterHeight: null,
     scaling: null,
-    sampling: 5,
+    sampling: 1,
     min: 134  // 128 == zero.  min is the "minimum detected signal" level.
 };
 

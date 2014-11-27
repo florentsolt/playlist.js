@@ -74,12 +74,13 @@ module.exports.getSongs = function() {
 
 module.exports.setOscillo = function(bool) {
     ctx.oscillo = !!bool;
-    if (ctx.oscillo === true && ctx.interval === null) {
-        ctx.interval = window.setInterval(analyze, 50);
+    if (ctx.oscillo === true/* && ctx.interval === null*/) {
+        // ctx.interval = window.setInterval(analyze, 50);
+        analyze();
         oscillo.show();
-    } else if (ctx.interval !== null) {
-        window.clearInterval(ctx.interval);
-        ctx.interval = null;
+    } else /* if (ctx.interval !== null)*/ {
+        // window.clearInterval(ctx.interval);
+        // ctx.interval = null;
         oscillo.hide();
     }
 };
@@ -105,6 +106,9 @@ module.exports.setVolume = function (volume) {
 };
 
 module.exports.isPlaying = function () {
+    if (!ctx.audio) {
+        return false;
+    }
     return !ctx.audio.paused;
 };
 
@@ -169,10 +173,10 @@ module.exports.setLoop = function(bool) {
 
 /* --------- Private --------- */
 
-var analyze = function(audio) {
+var analyze = function() {
     if (ctx.oscillo && module.exports.isPlaying()) {
-        if (audio || ctx.analyser === null) {
-            ctx.source = audioContext.createMediaElementSource(audio || ctx.audio);
+        if (ctx.analyser === null) {
+            ctx.source = audioContext.createMediaElementSource(ctx.audio);
             ctx.analyser = audioContext.createAnalyser();
             ctx.data = new Uint8Array(ctx.analyser.frequencyBinCount);
             ctx.source.connect(ctx.analyser);
@@ -181,7 +185,7 @@ var analyze = function(audio) {
 
         ctx.analyser.getByteTimeDomainData(ctx.data);
         oscillo.draw(ctx.data);
-        // requestAnimationFrame(analyze);
+        requestAnimationFrame(analyze);
     }
 };
 
@@ -199,7 +203,8 @@ var setIndex = function(index) {
     ctx.audio.addEventListener('ended', listener.end);
     // ctx.audio.volume = 0;
     module.exports.setVolume();
-    analyze(ctx.audio);
+    ctx.analyser = null;
+    analyze();
 };
 
 var listener = {
