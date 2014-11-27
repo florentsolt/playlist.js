@@ -22,6 +22,9 @@ var ctx = {
 
     oscillo: false,
     interval: null,
+    source: null,
+    analyser: null,
+    data: null,
 
     events: {
         play: noop,
@@ -166,13 +169,20 @@ module.exports.setLoop = function(bool) {
 
 /* --------- Private --------- */
 
-var analyze = function() {
-    if (module.exports.isPlaying()) {
+var analyze = function(audio) {
+    if (ctx.oscillo && module.exports.isPlaying()) {
+        if (audio || ctx.analyser === null) {
+            ctx.source = audioContext.createMediaElementSource(audio || ctx.audio);
+            ctx.analyser = audioContext.createAnalyser();
+            ctx.data = new Uint8Array(ctx.analyser.frequencyBinCount);
+            ctx.source.connect(ctx.analyser);
+            ctx.source.connect(audioContext.destination);
+        }
+
         ctx.analyser.getByteTimeDomainData(ctx.data);
         oscillo.draw(ctx.data);
         // requestAnimationFrame(analyze);
     }
-    return true;
 };
 
 var setIndex = function(index) {
@@ -189,13 +199,7 @@ var setIndex = function(index) {
     ctx.audio.addEventListener('ended', listener.end);
     // ctx.audio.volume = 0;
     module.exports.setVolume();
-    if (ctx.oscillo) {
-        ctx.source = audioContext.createMediaElementSource(ctx.audio);
-        ctx.analyser = audioContext.createAnalyser();
-        ctx.data = new Uint8Array(ctx.analyser.frequencyBinCount);
-        ctx.source.connect(ctx.analyser);
-        ctx.source.connect(audioContext.destination);
-    }
+    analyze(ctx.audio);
 };
 
 var listener = {
