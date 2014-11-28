@@ -18,6 +18,8 @@ var ctx = {
     nextBuffer: null,
 
     songs: [],
+    allSongs: [],
+
     loop: true,
 
     oscillo: false,
@@ -42,20 +44,6 @@ var audioContext = new window.AudioContext();
 
 /* --------- Public --------- */
 
-module.exports.setSongs = function(songs) {
-    if (Array.isArray(songs)) {
-        songs.forEach(function(song) {
-            if (typeof song.src == "string" && typeof song.title == "string" && typeof song.artwork == "string") {
-                ctx.songs.push(song);
-            } else {
-                console.log("Invalid song (src, title or artwork property missing or invalid).", song);
-            }
-        });
-    } else {
-        console.log("Playlist.setSongs only accet array of songs.");
-    }
-};
-
 module.exports.on = function(event, cb) {
     if (typeof cb == "function") {
         if (ctx.events[event]) {
@@ -68,8 +56,31 @@ module.exports.on = function(event, cb) {
     }
 };
 
+module.exports.setSongs = function(songs) {
+    if (Array.isArray(songs)) {
+        songs.forEach(function(song) {
+            if (typeof song.src == "string" && typeof song.title == "string" && typeof song.artwork == "string") {
+                ctx.allSongs.push(song);
+            } else {
+                console.log("Invalid song (src, title or artwork property missing or invalid).", song);
+            }
+            ctx.songs = ctx.allSongs;
+        });
+    } else {
+        console.log("Playlist.setSongs only accet array of songs.");
+    }
+};
+
 module.exports.getSongs = function() {
     return(ctx.songs);
+};
+
+module.exports.filterSongs = function(cb) {
+    if (cb === false || typeof cb != "function") {
+        ctx.songs = ctx.allSongs;
+    } else {
+        ctx.songs = ctx.allSongs.filter(cb);
+    }
 };
 
 module.exports.setOscillo = function(bool) {
