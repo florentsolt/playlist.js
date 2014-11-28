@@ -36,7 +36,8 @@ var ctx = {
         unmute: noop,
         next: noop,
         prev: noop,
-        time: noop
+        time: noop,
+        restart: noop
     }
 };
 
@@ -136,6 +137,15 @@ module.exports.play = function () {
         }
     }
 };
+
+module.exports.restart = function () {
+    ctx.audio.pause();
+    ctx.audio.currentTime = 0;
+    setIndex(0);
+    ctx.events.restart();
+    module.exports.play();
+};
+
 
 module.exports.stop = function () {
     ctx.audio.pause();
