@@ -139,9 +139,9 @@ module.exports.play = function () {
 };
 
 module.exports.restart = function () {
-    ctx.audio.pause();
-    ctx.audio.currentTime = 0;
-    setIndex(0);
+    module.exports.stop();
+    ctx.audio = null;
+    ctx.index = 0;
     ctx.events.restart();
     module.exports.play();
 };
@@ -160,7 +160,9 @@ module.exports.pause = function () {
 };
 
 module.exports.next  = function () {
-    if (ctx.autio) ctx.audio.pause();
+    if (ctx.autio) {
+        ctx.audio.pause();
+    }
     if (ctx.loop) {
         setIndex((ctx.index + 1) % ctx.songs.length);
     } else if (ctx.index + 1 < ctx.songs.length) {
